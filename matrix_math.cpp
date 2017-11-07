@@ -22,11 +22,22 @@ MODIFICATION HISTORY:
 
 
 ----------------------------------------------------------------------------------------*/
-
+#include "Matrix.h"
 
 int main(int argc, char * argv[])
 {
 	cout << "Hello\n";
-	
+	Matrix<int> mat;
+	Matrix<int> matty;
+	ifstream inFile;
+	inFile.open("A.mtx");
+	inFile >> A;
+	cout << A;
+
+	inFile.close();
+
+
+	cout << "Thanks bye\n";
+	return 0;
 }
 
