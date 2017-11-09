@@ -27,14 +27,26 @@ MODIFICATION HISTORY:
 int main(int argc, char * argv[])
 {
 	cout << "Hello\n";
-	Matrix<int> mat;
-	Matrix<int> matty;
-	ifstream inFile;
-	inFile.open("A.mtx");
-	inFile >> A;
-	cout << A;
+	Matrix_ops<int> mat;
+	Matrix_ops<int> matty;
+	ifstream inFile1;
+	inFile1.open("A.mtx");
+	inFile1 >> mat;
+	cout << mat << endl;
 
-	inFile.close();
+cout << "+" << endl;
+	ifstream inFile2;
+	inFile2.open("B.mtx");
+	inFile2 >> matty;
+	cout << matty << endl;
+	cout << "=" << endl;
+
+ 	cout << (mat * matty) << endl;
+
+
+
+
+	inFile1.close();
 
 
 	cout << "Thanks bye\n";
