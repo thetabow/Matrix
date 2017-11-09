@@ -94,7 +94,8 @@ public:
 	
 	Matrix_ops(int rows = 0, int columns = 0);
 	bool same_sizeness(const Matrix_ops&) const;
-	bool square(const Matrix_ops&) const;
+	bool compatible(const Matrix_ops&) const;
+	bool square() const;
 	Matrix_ops operator + (const Matrix_ops&) const;
 	Matrix_ops operator - (const Matrix_ops&) const;
 	Matrix_ops operator * (const Matrix_ops&) const;

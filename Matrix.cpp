@@ -58,7 +58,7 @@ NOTES:
 template <typename T>
 Matrix_ops<T> Matrix_ops<T>::operator+(const Matrix_ops<T>& mattey) const
 {
-	bool check = (*this).same_sizeness(mattey);
+	bool check = this->same_sizeness(mattey);
 	if(!check)
 		throw typename Matrix<T>::miss_size_error("Cannot add 2 matrices of different sizes\n");
 
@@ -85,9 +85,19 @@ Matrix_ops<T> Matrix_ops<T>::operator - (const Matrix_ops<T>& mat) const
 	return *this + -1*mat;
 }
 
+
+/*----------------------------------------------------------------------------------------
+FUNCTION NAME: operator *
+PURPOSE: multiply 2 compatible matrices
+RETURNS: Matrix_ops
+NOTES:
+----------------------------------------------------------------------------------------*/
 template <typename T>
 Matrix_ops<T> Matrix_ops<T>::operator *(const Matrix_ops<T>& x) const
 {
+	if(this->compatible(x) == false)
+		throw typename Matrix<T>::miss_size_error("Incompatible Matrices\n");
+
 	Matrix_ops<T> product(this->r, x.c);
 	for(int i = 0; i < product.r; i++)
 	{
@@ -135,9 +145,29 @@ bool Matrix_ops<T>::same_sizeness(const Matrix_ops<T>& matthew) const
 		return true;
 	return false;
 }
-/*
-template <typename>
-bool Matrix_ops<T>::square(const Matrix_ops& mathew) const
+
+/*-----------------------------------------------------------------------------------------
+FUNCITON: compatible
+PURPOSE: tell whether 2 matrices can be multiplied
+RETURNS: bool
+NOTES: order matters, left*right is being tested for do ability
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+bool Matrix_ops<T>::compatible(const Matrix_ops<T>& mathew) const
+{
+	if(this->c == mathew.r)
+		return true;
+	return false;
+}
+
+/*-----------------------------------------------------------------------------------------
+FUNCTION: square
+PURPOSE: tell if a matrix is square
+RETURNS: bool
+NOTES:
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+bool Matrix_ops<T>::square() const
 {
 	if(this->r == this->c)
 		return true;
