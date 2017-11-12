@@ -26,8 +26,12 @@ MODIFICATION HISTORY:
 goals:
 
 
-assignment
-entries can be polynomials!
+complex number class
+implement polynomial class
+eigen values and eigen vectors
+
+
+
 transpose
 inverse
 determinant
@@ -45,11 +49,15 @@ using namespace std;
 #include <string.h>
 
 
+
+/*------------------------------------------------------------------------------
+CLASS NAME: Matrix
+PURPOSE: input, output, constructors,
+NOTES: 
+------------------------------------------------------------------------------*/
 template <typename T>
 class Matrix 
 {
-
-
 template <typename B>
 friend istream& operator >> (istream& inFile, Matrix<B>& mat);
 template <typename B>
@@ -65,6 +73,7 @@ protected:
 
 public:
 	Matrix(int rows = 0, int columns = 0);
+	Matrix(const Matrix<T>&);
 	Matrix& operator = (const Matrix&);
 	int rows();
 	int columns();
@@ -76,10 +85,12 @@ public:
 	};
 };
 
+
 /*------------------------------------------------------------------------------
+CLASS NAME: Matrix_ops
+PURPOSE: overload operators to do math on matrices
+NOTES: inherits from Matrix class
 ------------------------------------------------------------------------------*/
-//template <typename T>
-//class Matrix<T>;
 template <typename T>
 class Matrix_ops : public Matrix<T> 
 {
@@ -90,11 +101,14 @@ public:
 	bool same_sizeness(const Matrix_ops&) const;
 	bool compatible(const Matrix_ops&) const;
 	bool square() const;
+	Matrix_ops exclude(int, int) const;
 	Matrix_ops operator + (const Matrix_ops&) const;
 	Matrix_ops operator - (const Matrix_ops&) const;
 	Matrix_ops operator * (const Matrix_ops&) const;
 	Matrix_ops operator * (int) const;
 	bool operator == (const Matrix_ops&)const;
+	Matrix_ops trans() const;
+
 };
 
 

@@ -26,6 +26,7 @@ MODIFICATION HISTORY:
 
 //prototypes
 int options(string);
+bool needsTwo(string arg);
 
 
 int main(int argc, char * argv[])
@@ -42,6 +43,7 @@ int main(int argc, char * argv[])
 		cout << "Too few arguments\n";
 		return 0;
 	}
+
 	if (argc >= 3)
 	{
 		ifstream inFile1;
@@ -50,12 +52,12 @@ int main(int argc, char * argv[])
 		inFile1.open(file1);
 		if(!inFile1)
 		{
-			cout << "Error opening file\n";
+			cout << "Error opening in file 1\n";
 			return 0;
 		}
 		inFile1 >> A;
 	}
-	if(argc >= 4)
+	if(needsTwo(argv[1]))
 	{
 		ifstream inFile2;
 		strcpy(file2, argv[3]);
@@ -63,31 +65,26 @@ int main(int argc, char * argv[])
 		inFile2.open(file2);
 		if(!inFile2)
 		{
-			cout << "Error opening file\n";
+			cout << "Error opening in file 2\n";
 			return 0;
 		}
 		inFile2 >> B;
 	}
-	if(argc >= 5)
+	for(int i = 0; i < argc; i++)
 	{
-		for(int i = 4; i < argc; i++)
+		if(argv[i] == string("-out"))
 		{
-			if(argv[i] == string("-out"))
+			strcat(outfile, argv[i+1]);
+			strcat(outfile, ".mtx");
+			outFile.open(outfile);
+			if(!outFile)
 			{
-				strcat(outfile, argv[i+1]);
-				strcat(outfile, ".mtx");
-				outFile.open(outfile);
-				if(!outFile)
-				{
-					cout << "Error opening file\n";
-					return 0;
-				}
-				output = true;
+				cout << "Error opening file\n";
+				return 0;
 			}
+			output = true;
 		}
 	}
-
-
 
 	switch(options(argv[1])) {
 		case 1: { //inp
@@ -104,21 +101,28 @@ int main(int argc, char * argv[])
 		}
 		case 5: {//eq
 			if(A==B)
-				cout << "The matrices are the same\n";
+				cout << "\nThe matrices are the same\n";
 			else
-				cout << "The matrices are not the same\n";
+				cout << "\nThe matrices are not the same\n";
+			break;
+		}
+		case 6: { //transpose
+			C = A.trans();
 			break;
 		}
 		default: {
-			cout << "Nothing here yet\n"; break;
+			cout << "\nNothing here yet\n"; break;
 		}
 	}
 
 
-	cout << C << endl;
+	cout << endl << C << endl;
 	if(output)
 		outFile << C.rows() << "x" << C.columns() << endl;
 		outFile << C;
+
+
+
 
 	cout << "Thanks bye\n";
 	return 0;
@@ -151,4 +155,18 @@ int options(string argName)
 		if(argName == "-det")
 			return 8;
 		return 0;
+}
+
+/*----------------------------------------------------------------------------------
+FUNCTION NAME: needsTwo
+PURPOSE: assesses if program needs 2 matrix arguments
+RETURNS: bool
+NOTES:
+----------------------------------------------------------------------------------*/
+bool needsTwo(string arg)
+{
+	if(arg == string("-add") || arg == string("-sub") || arg == string("-mul") || arg == string("-eq"))
+		return true;
+	return false;
+
 }

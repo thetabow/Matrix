@@ -44,6 +44,18 @@ Matrix<T>::Matrix(int rows, int columns)
 }
 
 /*----------------------------------------------------------------------------------------
+FUNCTION NAME: matrix copy constructor
+PURPOSE: initializes a matrix to the contents of another
+RETURNS: nothing
+NOTES:
+----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix<T>::Matrix(const Matrix<T>& martianMatt)
+{
+	*this = martianMatt;
+}
+
+/*----------------------------------------------------------------------------------------
 FUNCTION NAME: operator = 
 PURPOSE: assign one matrix contents to this one
 RETURNS: Matrix<T>&
@@ -175,6 +187,65 @@ bool Matrix_ops<T>::operator ==(const Matrix_ops<T>& mattDamon) const
 	}
 	return true;
 }
+
+/*-----------------------------------------------------------------------------------------
+FUNCTION NAME: exclude()
+PURPOSE: return a matrix that excludes a row and a column
+RETURNS: matrix_ops
+NOTES:
+-----------------------------------------------------------------------------------------
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::exclude(int row, int column) const
+{
+
+	cout << "hey\n";
+
+	Matrix_ops<T> legion((this->r)-1, (this->c)-1);
+
+	cout << "alright\n";
+	cout << legion.r << endl;
+	for(int i = 0; i < legion.r; i++)
+	{
+		for(int j = 0; j < legion.c; j++)
+		{
+			if(i < row)
+		}
+	}
+}
+
+/*-----------------------------------------------------------------------------------------
+FUNCITON NAME:
+PURPOSE:
+RETURNS:
+NOTES:
+-----------------------------------------------------------------------------------------
+template <typename T>
+int Matrix_ops<T>::det(const Matrix_ops<T>& mat)
+{
+
+}
+
+/*-----------------------------------------------------------------------------------------
+FUNCTION NAME: trans
+PURPOSE: transpose a matrix
+RETURNS: Matrix_ops<T>
+NOTES:
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::trans() const
+{
+	Matrix_ops<T> matFromBay(this->r, this->c);
+	for(int i = 0; i < this->r; i++)
+	{
+		for(int j = 0; j < this->c; j++)
+		{
+			matFromBay.entries[i][j] = this->entries[j][i];
+		}
+	}
+	return matFromBay;
+
+}
+
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION NAME: same_sizeness
