@@ -1,19 +1,22 @@
 /*--------------------------------------------------------------------------------------------
-FUNTION NAME: Matrix.cpp
+
+FILE NAME: Matrix.cpp
 
 DESCRIPTION: holds function definitions for Matrix class and matrix_ops derived class
 
 PURPOSE: definition of used class functions
 
-EXAMPLES: 
+USAGE: with matrix.h and matrix_math.cpp
 
-PARAMETERS:
+EXAMPLES: N/A
+
+PARAMETERS: N/A
 
 EXIT CODES:
 
-COMPILATION: 
+COMPILATION: g++
 
-NOTES:
+NOTES: templated class
 
 MODIFICATION HISTORY:
 
@@ -189,40 +192,109 @@ bool Matrix_ops<T>::operator ==(const Matrix_ops<T>& mattDamon) const
 }
 
 /*-----------------------------------------------------------------------------------------
+FUNCTION NAME: reduceRow()
+PURPOSE: return the reduced matrix (maybe just changes this matrix to the reduced one????)
+RETURNS: Matrix_ops<T>
+NOTES: 
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::reduceRow() const
+{
+	float x = 1;
+	Matrix_ops<T> A(*this);
+	int a = 1;
+	bool first = true;
+	int columnNumber;
+	T multiple;
+	T doodad;
+	for(int rowNumber = 0; rowNumber < A.r; rowNumber++)
+	{
+		for(int rowStart = rowNumber; rowStart < A.r; rowStart++)
+		{
+			if(first)
+			{
+				cout << "salty salty tears\n";
+				multiple = A.entries[rowNumber][rowNumber];
+				for(columnNumber = 0; columnNumber < A.c; columnNumber++)
+				{
+					A.entries[rowNumber][columnNumber] /= multiple;
+				}
+				first = false;
+			}
+			else{
+
+				for(columnNumber = 0; columnNumber < A.c; columnNumber++)
+				{
+					doodad = A.entries[rowStart][rowStart];
+					A.entries[rowStart][columnNumber] -= A.entries[rowStart][columnNumber] * doodad;
+				}
+			}
+		}
+		first = true;
+	}
+	return A;
+	
+}
+
+/*-----------------------------------------------------------------------------------------
 FUNCTION NAME: exclude()
 PURPOSE: return a matrix that excludes a row and a column
 RETURNS: matrix_ops
 NOTES:
------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------*/
 template <typename T>
 Matrix_ops<T> Matrix_ops<T>::exclude(int row, int column) const
 {
-
-	cout << "hey\n";
-
 	Matrix_ops<T> legion((this->r)-1, (this->c)-1);
 
-	cout << "alright\n";
-	cout << legion.r << endl;
-	for(int i = 0; i < legion.r; i++)
+	int columnMod = 0, rowMod = 0;
+
+	for(int i = 0; i < this->r; i++)
 	{
-		for(int j = 0; j < legion.c; j++)
+		for(int j = 0; j < this->c; j++)
 		{
-			if(i < row)
+			if(i == row)
+				rowMod = -1;
+			if(j == column)
+				columnMod= -1;
+			if(i != row && j != column)
+			{
+				legion.entries[i+rowMod][j+columnMod] = this->entries[i][j];
+			}
 		}
+		columnMod = 0;
 	}
+	return legion;
 }
 
 /*-----------------------------------------------------------------------------------------
-FUNCITON NAME:
-PURPOSE:
-RETURNS:
-NOTES:
------------------------------------------------------------------------------------------
+FUNCITON NAME: det()
+PURPOSE: determinant of a amtrix
+RETURNS: T
+NOTES: uses recursion
+-----------------------------------------------------------------------------------------*/
 template <typename T>
-int Matrix_ops<T>::det(const Matrix_ops<T>& mat)
+T Matrix_ops<T>::det() const
 {
+	if( !(this->square()) )
+		throw typename Matrix<T>::miss_size_error("Cannot take determinant of unsquare matrix\n");
 
+	T determinant;
+	determinant = 0;
+	Matrix_ops<T> A = *this;
+	int multiple = -1;
+	if(A.c == 2)
+	{
+		determinant = A.entries[0][0]*A.entries[1][1]-A.entries[0][1]*A.entries[1][0];
+		return determinant;
+	}
+	for(int i = 0; i < A.c; i++)
+	{
+		multiple *=-1;
+
+		determinant += A.entries[0][i]*multiple*( (A.exclude(0,i)).det() );
+	}
+	return determinant;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -234,10 +306,10 @@ NOTES:
 template <typename T>
 Matrix_ops<T> Matrix_ops<T>::trans() const
 {
-	Matrix_ops<T> matFromBay(this->r, this->c);
-	for(int i = 0; i < this->r; i++)
+	Matrix_ops<T> matFromBay(this->c, this->r);
+	for(int i = 0; i < matFromBay.r; i++)
 	{
-		for(int j = 0; j < this->c; j++)
+		for(int j = 0; j < matFromBay.c; j++)
 		{
 			matFromBay.entries[i][j] = this->entries[j][i];
 		}
@@ -246,6 +318,54 @@ Matrix_ops<T> Matrix_ops<T>::trans() const
 
 }
 
+/*-----------------------------------------------------------------------------------------
+FUNCTION NAME: inv()
+PURPOSE: inverse of a matrix
+RETURNS: Matrix_ops<T>
+NOTES:
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::inv() const
+{
+	T det = this->det();
+
+/*
+	if( det == 0)
+		throw typename Matrix<T>::det_zero_error("Cannot take inverse if determnant is zero\n");
+*/
+	Matrix_ops<T> inverse((this->cofactor()).trans());
+
+	for(int i = 0; i < inverse.r; i++)
+	{
+		for(int j = 0; j < inverse.c; j++)
+		{
+			inverse.entries[i][j] /= det;
+		}
+	}
+	return inverse;
+}
+
+/*-----------------------------------------------------------------------------------------
+FUNCTION NAME: cofactor
+PURPOSE: returns the cofactor matrix
+RETURNS: Matrix_ops<T>
+NOTES: cofactor matrix is a matrix where each entry has been replaced by the cofactor to
+	   that cell
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::cofactor() const
+{
+	Matrix_ops<T> co(this->r, this->c);
+
+	for(int i = 0; i < co.r; i++)
+	{
+		for(int j = 0; j < co.c; j++)
+		{
+			co.entries[i][j] = (this->exclude(i,j)).det();
+		}
+	}
+	return co;
+}
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION NAME: same_sizeness

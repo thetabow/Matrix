@@ -6,11 +6,11 @@ DESCRITION: Header file for Matrix class and matrix_ops derived class
 
 PURPOSE: class declarations
 
-USAGE: idk yet
+USAGE: with matrix_math.cpp
 
 EXAMPLES: 
 
-PARAMETERS: yup
+PARAMETERS: N/A
 
 EXIT CODES: 0 success, otherwise error
 
@@ -25,35 +25,38 @@ MODIFICATION HISTORY:
 /*------------------------
 goals:
 
+constructor for just number
 
-complex number class
 implement polynomial class
 eigen values and eigen vectors
+complex numbers work if only real part and if only imaginary part
 
 
 
-transpose
-inverse
-determinant
+inverse	
+
 crammers rule
-exclude certain rows or columns of things function
+
 
 ------------------------*/
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
-using namespace std;
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <stdexcept>
 #include <string.h>
 
+#include "Fraction.h"
+#include "complex.h"
+
 
 
 /*------------------------------------------------------------------------------
 CLASS NAME: Matrix
-PURPOSE: input, output, constructors,
-NOTES: 
+PURPOSE: input, output, constructors, assignment operator
+NOTES: Parent to Matrix_ops class
 ------------------------------------------------------------------------------*/
 template <typename T>
 class Matrix 
@@ -83,6 +86,13 @@ public:
 	public:
 		miss_size_error(const string&);
 	};
+	/*
+	class det_zero_error : public runtime_error
+	{
+	public:
+		det_zero_error(const string&);
+	};
+	*/
 };
 
 
@@ -108,6 +118,11 @@ public:
 	Matrix_ops operator * (int) const;
 	bool operator == (const Matrix_ops&)const;
 	Matrix_ops trans() const;
+	T det() const;
+	Matrix_ops cofactor() const;
+	Matrix_ops inv() const;
+	Matrix_ops exclude() const;
+	Matrix_ops reduceRow() const;
 
 };
 
