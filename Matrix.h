@@ -25,7 +25,6 @@ MODIFICATION HISTORY:
 /*------------------------
 goals:
 
-constructor for just number
 
 implement polynomial class
 eigen values and eigen vectors
@@ -86,13 +85,15 @@ public:
 	public:
 		miss_size_error(const string&);
 	};
-	/*
+	
+
+	//Alex, here is problem of error throwing
 	class det_zero_error : public runtime_error
 	{
 	public:
 		det_zero_error(const string&);
 	};
-	*/
+	
 };
 
 
