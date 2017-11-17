@@ -219,16 +219,15 @@ Matrix_ops<T> Matrix_ops<T>::reduceRow() const
 				{
 					A.entries[rowNumber][columnNumber] /= multiple;
 				}
-				first = false;
 			}
 			else{
-
+				doodad = A.entries[rowStart][rowNumber];
 				for(columnNumber = 0; columnNumber < A.c; columnNumber++)
 				{
-					doodad = A.entries[rowStart][rowStart];
-					A.entries[rowStart][columnNumber] -= A.entries[rowStart][columnNumber] * doodad;
+					A.entries[rowStart][columnNumber] -= A.entries[rowNumber][columnNumber] * doodad;
 				}
 			}
+			first = false;
 		}
 		first = true;
 	}
@@ -329,10 +328,10 @@ Matrix_ops<T> Matrix_ops<T>::inv() const
 {
 	T det = this->det();
 
-/*
+//Alex, these 2 lines arent super working
 	if( det == 0)
 		throw typename Matrix<T>::det_zero_error("Cannot take inverse if determnant is zero\n");
-*/
+
 	Matrix_ops<T> inverse((this->cofactor()).trans());
 
 	for(int i = 0; i < inverse.r; i++)

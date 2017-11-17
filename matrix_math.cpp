@@ -29,20 +29,38 @@ using namespace std;
 int options(string);
 bool needsTwo(string arg);
 
-
+/*---------------------------------------------------------------------------------------
+FUNCTION NAME: main
+PURPOSE: driver function
+RETURNS: int
+NOTES: different set ups for different types are commented out, please only have
+		the type you want to use uncommented out
+---------------------------------------------------------------------------------------*/
 int main(int argc, char * argv[])
 {
+	//Complex with fraction set up:
 	//Matrix_ops<Complex<Fraction>> A, B, C;
-	Matrix_ops<int> A,B,C;
+	//Complex<Fraction> num;
+
+	//Complex with decimal set up:
+	//Matrix_ops<Complex<double>> A, B, C;
+	//Complex<double> num;
+
+	//Fraction real set up:
+	Matrix_ops<Fraction> A, B, C;
+	Fraction num;
+
+	//int set up
+	//Matrix_ops<int> A, B, C;
+	//int num;
+
+	num = 0;
 	char file1[20];
 	char file2[20];
 	char outfile[20];
 	ofstream outFile;
 	bool output = false;
 
-//Complex<Fraction> num;
-	int num;
-num = 0;
 
 	if(argc < 3)
 	{
@@ -131,6 +149,10 @@ num = 0;
 			C = A.reduceRow();
 			break;
 		}
+		case 10: { //testing out cofactor
+			C = A.cofactor();
+			break;
+		}
 		default: {
 			cout << "\nNothing here yet\n"; break;
 		}
@@ -180,6 +202,8 @@ int options(string argName)
 			return 8;
 		if(argName == "-rre")
 			return 9;
+		if(argName == "-co")
+			return 10;
 		return 0;
 }
 
