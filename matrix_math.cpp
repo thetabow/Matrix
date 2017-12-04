@@ -168,6 +168,10 @@ int main(int argc, char * argv[])
 			C = A.cofactor();
 			break;
 		}
+		case 12: { //solve
+			C = A.solve();
+			break;
+		}
 		case 11: { //randomly fill a matrix
 			int r = stoi(string(argv[3]));
 			int c = stoi(string(argv[4]));
@@ -224,6 +228,8 @@ int options(string argName)
 			return 10;
 		if(argName == "-rand")
 			return 11;
+		if(argName == "-solve")
+			return 12;
 		return 0;
 }
 

@@ -105,9 +105,12 @@ public:
 	//using Matrix<T> :: rows;
 
 	Matrix_ops(int rows = 0, int columns = 0);
+
 	bool same_sizeness(const Matrix_ops&) const;
 	bool compatible(const Matrix_ops&) const;
 	bool square() const;
+	Matrix_ops excludeColumn(int) const;
+	Matrix_ops excludeRow(int) const;
 	Matrix_ops exclude(int, int) const;
 	Matrix_ops operator + (const Matrix_ops&) const;
 	Matrix_ops operator - (const Matrix_ops&) const;
@@ -120,8 +123,10 @@ public:
 	Matrix_ops cofactor() const;
 	Matrix_ops inv() const;
 	Matrix_ops swapRows(int, int);
+	Matrix_ops swapColumns(int, int) const;
 	Matrix_ops exclude() const;
 	Matrix_ops reduceRow() const;
+	Matrix_ops solve() const;
 
 };
 

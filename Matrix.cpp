@@ -262,6 +262,57 @@ Matrix_ops<T> Matrix_ops<T>::swapRows(int firstRow, int secondRow)
 }
 
 /*-----------------------------------------------------------------------------------------
+FUNCITON NAME: excluedColumn()
+PURPOSE: exclude the nth column of a matrix
+RETURNS: matrix_ops
+NOTES:
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::excludeColumn(int column) const
+{
+	Matrix_ops<T> mat((this->r), (this->c)- 1);
+	int columnMod = 0;
+
+	for(int i = 0; i < this->r; i++)
+	{
+		for(int j = 0; j < this->c; j++)
+		{
+			if(i == column)
+				columnMod = -1;
+			if(j != column)
+				mat.entries[i][j+columnMod] = this->entries[i][j];
+		}
+		columnMod = 0;
+	}
+	return mat;
+}
+
+/*-----------------------------------------------------------------------------------------
+FUNCITON NAME: excluedRow()
+PURPOSE: exclude the nth Row of a matrix
+RETURNS: matrix_ops
+NOTES:
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::excludeRow(int row) const
+{
+	Matrix_ops<T> mat((this->r) - 1, (this->c));
+	int rowMod = 0;
+
+	for(int i = 0; i < this->r; i++)
+	{
+		for(int j = 0; j < this->c; j++)
+		{
+			if(j = row)
+				rowMod = -1;
+			if(i != row)
+				mat.entries[i+rowMod][j] = this->entries[i][j];
+		}
+	}
+	return mat;
+}
+
+/*-----------------------------------------------------------------------------------------
 FUNCTION NAME: exclude()
 PURPOSE: return a matrix that excludes a row and a column
 RETURNS: matrix_ops
@@ -281,7 +332,7 @@ Matrix_ops<T> Matrix_ops<T>::exclude(int row, int column) const
 			if(i == row)
 				rowMod = -1;
 			if(j == column)
-				columnMod= -1;
+				columnMod = -1;
 			if(i != row && j != column)
 			{
 				legion.entries[i+rowMod][j+columnMod] = this->entries[i][j];
@@ -335,6 +386,8 @@ RETURNS: T
 NOTES: doesnt use recursion 
 
 just under 17 minutes to do a 12x12
+
+also its just garbage
 -----------------------------------------------------------------------------------------
 template <typename T>
 T Matrix_ops<T>::determinant() const
@@ -411,6 +464,56 @@ Matrix_ops<T> Matrix_ops<T>::cofactor() const
 		}
 	}
 	return co;
+}
+
+/*-----------------------------------------------------------------------------------------
+FUNCTION NAME: swapColumn(int, int)
+PURPOSE: swap 2 rows of a matrix
+RETURNS: matrix_ops
+NOTES:
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::swapColumns(int x, int y) const
+{
+	Matrix_ops<T> mat((this->r), (this->c));
+	for(int i = 0; i < mat.r; i++)
+	{
+		for(int j = 0; j < mat.c; j++)
+		{
+			if(j == x)
+				mat.entries[i][j] = this->entries[i][y];
+			else if(j == y)
+				mat.entries[i][j] = this->entries[i][x];
+			else
+				mat.entries[i][j] = this->entries[i][j];
+		}
+	}
+	return mat;
+}
+
+/*-----------------------------------------------------------------------------------------
+FUNCTION NAME: solve()
+PURPOSE: solve a matrix using crammers Rule
+RETURNS: T
+NOTES: uses crammer's rule
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::solve() const
+{
+	if((this->r) + 1 != (this->c))
+		throw typename Matrix<T>::miss_size_error("Invalid size");
+	T A = this->excludeColumn((this->c)-1).det();
+	if(A == 0)
+		throw typename Matrix<T>::det_zero_error("Determinant is 0, so solution feasible using this mathod");
+
+	T B;
+	Matrix_ops<T> answers(1, (this->c) - 1);
+	for(int i = 0; i < (this->c) - 1; i++)
+	{
+		B = this->swapColumns(i, (this->c)-1).excludeColumn((this->c)-1).det();
+		answers.entries[0][i] = B/A;
+	}
+	return answers; 
 }
 
 /*-----------------------------------------------------------------------------------------
