@@ -28,11 +28,6 @@ goals:
 
 implement polynomial class
 eigen values and eigen vectors
-complex numbers work if only real part and if only imaginary part
-
-
-
-inverse	
 
 crammers rule
 
@@ -46,6 +41,7 @@ crammers rule
 #include <vector>
 #include <stdexcept>
 #include <string.h>
+#include <string>
 
 #include "Fraction.h"
 #include "complex.h"
@@ -86,8 +82,6 @@ public:
 		miss_size_error(const string&);
 	};
 	
-
-	//Alex, here is problem of error throwing
 	class det_zero_error : public runtime_error
 	{
 	public:
@@ -108,6 +102,8 @@ class Matrix_ops : public Matrix<T>
 
 public:
 	
+	//using Matrix<T> :: rows;
+
 	Matrix_ops(int rows = 0, int columns = 0);
 	bool same_sizeness(const Matrix_ops&) const;
 	bool compatible(const Matrix_ops&) const;
@@ -120,8 +116,10 @@ public:
 	bool operator == (const Matrix_ops&)const;
 	Matrix_ops trans() const;
 	T det() const;
+	//T determinant() const;
 	Matrix_ops cofactor() const;
 	Matrix_ops inv() const;
+	Matrix_ops swapRows(int, int);
 	Matrix_ops exclude() const;
 	Matrix_ops reduceRow() const;
 

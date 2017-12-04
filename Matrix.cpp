@@ -195,36 +195,37 @@ bool Matrix_ops<T>::operator ==(const Matrix_ops<T>& mattDamon) const
 FUNCTION NAME: reduceRow()
 PURPOSE: return the reduced matrix (maybe just changes this matrix to the reduced one????)
 RETURNS: Matrix_ops<T>
-NOTES: 
+NOTES: det defaults to false
 -----------------------------------------------------------------------------------------*/
 template <typename T>
 Matrix_ops<T> Matrix_ops<T>::reduceRow() const
 {
-	float x = 1;
+	T x = 1;
 	Matrix_ops<T> A(*this);
-	int a = 1;
 	bool first = true;
 	int columnNumber;
 	T multiple;
-	T doodad;
+
+
+
 	for(int rowNumber = 0; rowNumber < A.r; rowNumber++)
 	{
 		for(int rowStart = rowNumber; rowStart < A.r; rowStart++)
 		{
 			if(first)
 			{
-				cout << "salty salty tears\n";
 				multiple = A.entries[rowNumber][rowNumber];
 				for(columnNumber = 0; columnNumber < A.c; columnNumber++)
 				{
 					A.entries[rowNumber][columnNumber] /= multiple;
 				}
+				x *= multiple;
 			}
 			else{
-				doodad = A.entries[rowStart][rowNumber];
+				multiple = A.entries[rowStart][rowNumber];
 				for(columnNumber = 0; columnNumber < A.c; columnNumber++)
 				{
-					A.entries[rowStart][columnNumber] -= A.entries[rowNumber][columnNumber] * doodad;
+					A.entries[rowStart][columnNumber] -= A.entries[rowNumber][columnNumber] * multiple;
 				}
 			}
 			first = false;
@@ -233,6 +234,31 @@ Matrix_ops<T> Matrix_ops<T>::reduceRow() const
 	}
 	return A;
 	
+}
+/*-----------------------------------------------------------------------------------------
+FUNCTION NAME: swapRows
+PURPOSE: swap 2 rows
+RETURNS: Matrix_ops<T>
+NOTES:
+-----------------------------------------------------------------------------------------*/
+template <typename T>
+Matrix_ops<T> Matrix_ops<T>::swapRows(int firstRow, int secondRow)
+{
+	Matrix_ops<T> copyFirst(1, this->c);
+	
+	for(int i = 0; i < copyFirst.c; i++)
+	{
+		copyFirst.entries[0][i] = this->entries[firstRow][i];
+	}
+	for(int i = 0; i < this->c; i++)
+	{
+		this->entries[firstRow][i] =this->entries[secondRow][i];	
+	}
+	for(int i = 0; i < this->c; i++)
+	{
+		this->entries[secondRow][i] =this->entries[firstRow][i];	
+	}
+	return *this;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -268,7 +294,7 @@ Matrix_ops<T> Matrix_ops<T>::exclude(int row, int column) const
 
 /*-----------------------------------------------------------------------------------------
 FUNCITON NAME: det()
-PURPOSE: determinant of a amtrix
+PURPOSE: determinant of a matrix
 RETURNS: T
 NOTES: uses recursion
 -----------------------------------------------------------------------------------------*/
@@ -282,20 +308,42 @@ T Matrix_ops<T>::det() const
 	determinant = 0;
 	Matrix_ops<T> A = *this;
 	int multiple = -1;
+	if(A.c == 1)
+	{
+		determinant = A.entries[0][0];
+		return determinant;
+	}
+	/*
 	if(A.c == 2)
 	{
 		determinant = A.entries[0][0]*A.entries[1][1]-A.entries[0][1]*A.entries[1][0];
 		return determinant;
-	}
+	}*/
 	for(int i = 0; i < A.c; i++)
 	{
 		multiple *=-1;
-
-		determinant += A.entries[0][i]*multiple*( (A.exclude(0,i)).det() );
+		if(A.entries[0][i] != 0)
+			determinant += A.entries[0][i]*multiple*( (A.exclude(0,i)).det() );
 	}
 	return determinant;
 }
 
+/*-----------------------------------------------------------------------------------------
+FUNCTION NAME: determinant()
+PURPOSE: determinant of large matrices (greater than 12 x 12)
+RETURNS: T
+NOTES: doesnt use recursion 
+
+just under 17 minutes to do a 12x12
+-----------------------------------------------------------------------------------------
+template <typename T>
+T Matrix_ops<T>::determinant() const
+{
+	if( !(this->square()) )
+		throw typename Matrix<T>::miss_size_error("Cannot take determinant of unsquare matrix\n");
+
+	return (this->reduceRow(true)).det();
+}
 /*-----------------------------------------------------------------------------------------
 FUNCTION NAME: trans
 PURPOSE: transpose a matrix
@@ -328,7 +376,6 @@ Matrix_ops<T> Matrix_ops<T>::inv() const
 {
 	T det = this->det();
 
-//Alex, these 2 lines arent super working
 	if( det == 0)
 		throw typename Matrix<T>::det_zero_error("Cannot take inverse if determnant is zero\n");
 
@@ -484,6 +531,11 @@ ostream& operator << (ostream& out, const Matrix<T>& mat)
 
 template <typename T>
 Matrix<T>::miss_size_error::miss_size_error(const string& error):runtime_error(error)
+{
+
+}
+template <typename T>
+Matrix<T>::det_zero_error::det_zero_error(const string& error):runtime_error(error)
 {
 
 }

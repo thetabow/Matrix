@@ -177,7 +177,7 @@ RETURNS: Complex<T>
 NOTES:
 -------------------------------------------------------------------------------------------*/
 template <typename T>
-Complex<T> Complex<T>::operator -(const T & num) const
+Complex<T> Complex<T>::operator - (const T & num) const
 {
 	Complex<T> answer = *this;
 	answer.real -= num;
@@ -216,7 +216,7 @@ RETURNS: Complex<T>
 NOTES:
 -------------------------------------------------------------------------------------------*/
 template <typename T>
-Complex<T> Complex<T>::operator -=(const Complex& rhs)
+Complex<T> Complex<T>::operator -= (const Complex& rhs)
 {
 	*this = *this - rhs;
 	return *this;
@@ -360,7 +360,7 @@ RETURNS: bool
 NOTES:
 -------------------------------------------------------------------------------------------*/
 template <typename T>
-bool Complex<T>::operator !=(const Complex& rhs) const
+bool Complex<T>::operator != (const Complex& rhs) const
 {
 	if(real != rhs.real || imaginary != rhs.imaginary)
 		return true;
@@ -375,7 +375,7 @@ RETURNS: bool
 NOTES: if there is an imaginary part it cant be equal, kinda a tricky one
 -------------------------------------------------------------------------------------------*/
 template <typename T>
-bool Complex<T>::operator !=(const T& rhs) const
+bool Complex<T>::operator != (const T& rhs) const
 {
 	if(real != rhs || imaginary != 0)
 		return true;
@@ -403,9 +403,9 @@ RETURNS: bool
 NOTES: imaginary part has to be 0
 -------------------------------------------------------------------------------------------*/
 template <typename T>
-bool Complex<T>::operator ==(const T& rhs) const
+bool Complex<T>::operator == (const T& rhs) const
 {
-	if(real == rhs &&imaginary == 0)
+	if(real == rhs && imaginary == 0)
 		return true;
 	return false;
 }
@@ -425,8 +425,15 @@ ostream& operator << (ostream& out, const Complex<T>& z)
 {
 	if(z.imaginary > 0 && z.real !=0)
 		out << z.real << "+" << z.imaginary << "i";
-	if(z.imaginary < 0 && z.real !=0)
-		out << z.real << "-" << z.imaginary*-1 << "i";
+	else if(z.imaginary < 0 && z.real !=0)
+		out << z.real << "-" << z.imaginary*(-1) << "i";
+	else if(z.real == 0 && z.imaginary != 0)
+		out << z.imaginary << "i";
+	else if(z.imaginary == 0 && z.real != 0)
+		out << z.real;
+	else
+		out << z.real;
+	
 	return out;
 }
 
@@ -443,29 +450,73 @@ istream& operator >> (istream& in, Complex<T>& z)
 
 	T re = 0;
 	T im = 0;
-	char plus_or_i;
-	in >> re;
-	in>> plus_or_i;
-	if(plus_or_i == 'i')
+	T number = 0;
+	char symbol;
+	char test;
+	int negative = 1;
+
+	test = in.peek();
+	if(test == 'i')
 	{
 		z.real = 0;
-		z.imaginary = re;
+		z.imaginary = 1;
+		in >> symbol;
+		return in;
 	}
-	else if(plus_or_i == '+') 
-	{
-		z.real = re;
-		in >> im;
-		z.imaginary = im;
-		in >> plus_or_i;
-	}
-	else if(plus_or_i == '-')
-	{
 
-		z.real = re;
-		in >> im;
-		z.imaginary = im * -1;
-		in >> plus_or_i;
+	in >> number;
+	in >> symbol;
+
+	if(symbol == '+')
+	{
+		re = number;
+		test = in.peek();
+		if(test != 'i')
+		{		
+			in >> number; 
+			im = number;
+		}
+		else
+		{
+			im = 1;
+		}
+		in >> symbol;
+		if(symbol != 'i')
+		{
+			//throw a n error
+		}
 	}
+	else if(symbol == '-')
+	{
+		re = number;
+		test = in.peek();
+		if(test != 'i')
+		{		
+			in >> number;
+			im = number * (-1);
+		}
+		else
+		{
+			im = 1;
+		}
+		in >> symbol;
+		if(symbol != 'i')
+		{
+			//throw a n error
+		}
+	}
+	else if(symbol == ' ')
+	{
+		re = number;
+		im = 0;
+	}
+	else if(symbol == 'i')
+	{
+		re = 0;
+		im = number;
+	}
+
+	z.real = re;
+	z.imaginary = im;
 	return in;
-
 }

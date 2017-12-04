@@ -23,11 +23,14 @@ MODIFICATION HISTORY:
 
 ----------------------------------------------------------------------------------------*/
 #include "Matrix.h"
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 //prototypes
 int options(string);
 bool needsTwo(string arg);
+void randomFill(char * fileName, int rows, int columns);
 
 /*---------------------------------------------------------------------------------------
 FUNCTION NAME: main
@@ -38,6 +41,9 @@ NOTES: different set ups for different types are commented out, please only have
 ---------------------------------------------------------------------------------------*/
 int main(int argc, char * argv[])
 {
+	unsigned seed = time(0);
+	srand(seed);
+
 	//Complex with fraction set up:
 	//Matrix_ops<Complex<Fraction>> A, B, C;
 	//Complex<Fraction> num;
@@ -46,13 +52,20 @@ int main(int argc, char * argv[])
 	//Matrix_ops<Complex<double>> A, B, C;
 	//Complex<double> num;
 
-	//Fraction real set up:
-	Matrix_ops<Fraction> A, B, C;
-	Fraction num;
+	//Complex with ints set up:
+	//Matrix_ops<Complex<int>> A, B, C;
+	//Complex<int> num;
 
-	//int set up
-	//Matrix_ops<int> A, B, C;
-	//int num;
+	//Fraction real set up:
+	//Matrix_ops<Fraction> A, B, C;
+	//Fraction num;
+
+	//long set up
+	Matrix_ops<long> A, B, C;
+	long num;
+
+	//Matrix_ops<double> A,B,C;
+	//double num;
 
 	num = 0;
 	char file1[20];
@@ -68,7 +81,7 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	if (argc >= 3)
+	if (argc >= 3 && argv[1] != "-rand")
 	{
 		ifstream inFile1;
 		strcpy(file1, argv[2]);
@@ -76,10 +89,11 @@ int main(int argc, char * argv[])
 		inFile1.open(file1);
 		if(!inFile1)
 		{
-			cout << "Error opening in file 1\n";
+			cout << "Error opening file\n";
 			return 0;
 		}	
 		inFile1 >> A;
+		inFile1.close();
 	}
 	if(needsTwo(argv[1]))
 	{
@@ -89,10 +103,11 @@ int main(int argc, char * argv[])
 		inFile2.open(file2);
 		if(!inFile2)
 		{
-			cout << "Error opening in file 2\n";
+			cout << "Error opening file\n";
 			return 0;
 		}
 		inFile2 >> B;
+		inFile2.close();
 	}
 	for(int i = 0; i < argc; i++)
 	{
@@ -153,6 +168,12 @@ int main(int argc, char * argv[])
 			C = A.cofactor();
 			break;
 		}
+		case 11: { //randomly fill a matrix
+			int r = stoi(string(argv[3]));
+			int c = stoi(string(argv[4]));
+			randomFill(argv[2], r, c);
+			break;
+		}
 		default: {
 			cout << "\nNothing here yet\n"; break;
 		}
@@ -166,9 +187,6 @@ int main(int argc, char * argv[])
 		outFile << C.rows() << "x" << C.columns() << endl;
 		outFile << C;
 	}
-
-
-
 
 	cout << "Thanks bye\n";
 	return 0;
@@ -204,6 +222,8 @@ int options(string argName)
 			return 9;
 		if(argName == "-co")
 			return 10;
+		if(argName == "-rand")
+			return 11;
 		return 0;
 }
 
@@ -218,5 +238,42 @@ bool needsTwo(string arg)
 	if(arg == string("-add") || arg == string("-sub") || arg == string("-mul") || arg == string("-eq"))
 		return true;
 	return false;
+
+}
+
+/*----------------------------------------------------------------------------------
+FUNCTION NAME: rnadomFill
+PURPOSE: fill a matrix of given size with random numbers so i dont have to
+RETURNS: void
+NOTES:
+----------------------------------------------------------------------------------*/
+void randomFill(char* file, int rows, int columns)
+{
+
+	ofstream outPut;
+	char fileName[20];
+	strcpy(fileName, file);
+	strcat(fileName, ".mtx");
+
+	cout << "opening: " << fileName << endl;
+	outPut.open(fileName);
+	if(!outPut)
+	{
+		cout << "Error opening file\n";
+		return;
+	}
+
+	outPut << rows << "x" << columns << endl;
+
+	for(int i = 0; i < rows; i++)
+	{
+		for(int j = 0; j < columns; j++)
+		{
+			outPut << (rand() % 10 - 4) << " " ;
+		}
+		outPut << endl;
+	}
+	
+	outPut.close();
 
 }

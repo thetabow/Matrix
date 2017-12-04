@@ -135,6 +135,7 @@ NOTES:
 Fraction& Fraction::operator *= (const Fraction& f) 
 {
 	*this = *this * f;
+	*this = (*this)--;
 	return *this;
 }
 
@@ -171,6 +172,7 @@ NOTES:
 Fraction& Fraction::operator /= (const Fraction& f)
 {
 	*this = *this / f;
+	*this = (*this)--;
 	return *this;
 }
 
@@ -184,6 +186,7 @@ Fraction& Fraction::operator /= (int num)
 {
 	Fraction f(num);
 	*this = *this / f;
+	*this = (*this)--;
 	return *this;
 }
 
@@ -238,6 +241,7 @@ NOTES:
 Fraction& Fraction::operator +=(const Fraction& f)
 {
 	*this = *this + f;
+	*this = (*this)--;
 	return *this;
 }
 
@@ -291,6 +295,7 @@ NOTES:
 Fraction& Fraction::operator -= (const Fraction& f)
 {
 	*this = *this - f;
+	*this = (*this)--;
 	return *this;
 }
 
@@ -570,7 +575,7 @@ Fraction exp(const Fraction& base, int exponent)
 		exponent>>=1;
 		base_cpy *= base_cpy;
 	}
-	return value;
+	return value--;
 }
 
 /*-------------------------------------------------------------------------------------------
