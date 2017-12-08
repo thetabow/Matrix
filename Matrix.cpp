@@ -200,7 +200,8 @@ NOTES: det defaults to false
 template <typename T>
 Matrix_ops<T> Matrix_ops<T>::reduceRow() const
 {
-	T x = 1;
+	T x;
+	x = 1;
 	Matrix_ops<T> A(*this);
 	bool first = true;
 	int columnNumber;
@@ -609,6 +610,32 @@ istream& operator >> (istream& inFile, Matrix<T>& mat)
 	}
 	return inFile;
 }
+
+/*-----------------------------------------------------------------------------------
+FUNCTION NAME: openfile()
+PURPOSE: open file, read matrix from file, put data into matrix close file
+RETURNS: int
+NOTES: int for success state of file opening  
+-----------------------------------------------------------------------------------*/
+template <typename T>
+int Matrix_ops<T>::openfile(string argv)
+{
+	string file;
+	ifstream inFile;
+	file = argv;
+	file+= ".mtx";
+	inFile.open(file);
+	if(!inFile)
+	{
+		cout << "Error opening file\n";
+		return 0;
+	}	
+	inFile >> *this;
+	inFile.close();
+
+	//1 means success in this case
+	return 1;
+	}
 /*-----------------------------------------------------------------------------------------
 FUNCTION NAME: << operator overload
 PURPOSE: output a matrix with a little formatting

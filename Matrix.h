@@ -105,7 +105,7 @@ public:
 	//using Matrix<T> :: rows;
 
 	Matrix_ops(int rows = 0, int columns = 0);
-
+	int openfile(string);
 	bool same_sizeness(const Matrix_ops&) const;
 	bool compatible(const Matrix_ops&) const;
 	bool square() const;

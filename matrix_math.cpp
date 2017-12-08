@@ -1,4 +1,4 @@
-/*--------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------------------
 FILE NAME: matrix_math.cpp
 
 DESCRIPTION: driver program for Matrix class
@@ -14,20 +14,37 @@ PARAMETERS: -h, -inp, -out, -add, -sub, -mul, -eq, -T, -1, -det, -solve
 
 EXIT CODES: 0 success, otherwise failure
 
-COMPILATION:
+COMPILATION: command "make" and use given makefile
 
-NOTES:
+NOTES:  must manually switch which type of a matrix you are using by commenting and uncommenting parts in the
+		driver...pretty well documented on which parts those are. 
+
+		currently using type: double
 
 MODIFICATION HISTORY:
+Author:			Date: 			Version:		Details:
+----------------------------------------------------------------------------------------------------------------
+Zuriah Quinton  11/7/17			1.0				set up input and output to files
+Zuriah Quinton  11/9/17			2.0				addition, subtraction, multiplication
+Zuriah Quinton  11/9/17			2.1				size checking and compatibility checking
+Zuriah Quinton  11/10/17		2.2				command line arguments compatible for existing operations
+Zuriah Quinton  11/10/17		2.3				small fixes to output operator, assignment operator
+Zuriah Quinton  11/12/17		3.0				Transpose a matrix function
+Zuriah Quinton  11/17/17		3.1				Determinant of a matrix function
+Zuriah Quinton  11/17/17		3.1.5			Fix small problems with throwing errors related to incorrect size
+Zuriah Quinton  12/03/17		3.2				Inverse of a matrix
+Zuriah Quinton  12/03/17		4.0				COMPLEX NUMBERS class created (brought fraction class over from last project)
+Zuriah Quinton  12/03/17		4.1				finally got around to crammer's rule
+Zuriah Quinton  12/05/17		4.2				simplified how to open the files and get info into them
 
-
-----------------------------------------------------------------------------------------*/
+--------------------------------------------------------------------------------------------------------------*/
 #include "Matrix.h"
 #include <cstdlib>
 #include <ctime>
 using namespace std;
 
 //prototypes
+
 int options(string);
 bool needsTwo(string arg);
 void randomFill(char * fileName, int rows, int columns);
@@ -43,6 +60,14 @@ int main(int argc, char * argv[])
 {
 	unsigned seed = time(0);
 	srand(seed);
+
+	//double set up
+	Matrix_ops<double> A,B,C;
+	double num;
+
+	//long set up
+	//Matrix_ops<long> A, B, C;
+	//long num;
 
 	//Complex with fraction set up:
 	//Matrix_ops<Complex<Fraction>> A, B, C;
@@ -60,55 +85,38 @@ int main(int argc, char * argv[])
 	//Matrix_ops<Fraction> A, B, C;
 	//Fraction num;
 
-	//long set up
-	Matrix_ops<long> A, B, C;
-	long num;
 
-	//Matrix_ops<double> A,B,C;
-	//double num;
+
 
 	num = 0;
-	char file1[20];
+	
 	char file2[20];
 	char outfile[20];
 	ofstream outFile;
 	bool output = false;
 
 
+
+	//any set of arguments requires more than 3 arguments
 	if(argc < 3)
 	{
 		cout << "Too few arguments\n";
 		return 0;
 	}
 
+	//exclude rand command here because it does crazy other things
 	if (argc >= 3 && argv[1] != "-rand")
 	{
-		ifstream inFile1;
-		strcpy(file1, argv[2]);
-		strcat(file1, ".mtx");
-		inFile1.open(file1);
-		if(!inFile1)
-		{
-			cout << "Error opening file\n";
+		if(!A.openfile(argv[2])) 
 			return 0;
-		}	
-		inFile1 >> A;
-		inFile1.close();
 	}
+	//see needsTwo function for more details, but opens a second file if needed
 	if(needsTwo(argv[1]))
 	{
-		ifstream inFile2;
-		strcpy(file2, argv[3]);
-		strcat(file2, ".mtx");
-		inFile2.open(file2);
-		if(!inFile2)
-		{
-			cout << "Error opening file\n";
+		if(!B.openfile(argv[3])) 
 			return 0;
-		}
-		inFile2 >> B;
-		inFile2.close();
 	}
+	//checks for any specified output file
 	for(int i = 0; i < argc; i++)
 	{
 		if(argv[i] == string("-out"))
@@ -121,10 +129,12 @@ int main(int argc, char * argv[])
 				cout << "Error opening file\n";
 				return 0;
 			}
+			//a bool to keep track of if printing to file at end is necessary
 			output = true;
 		}
 	}
 
+	//see options() function for more details, but if changes which command is used
 	switch(options(argv[1])) {
 		case 1: { //inp
 			C = A; break;
@@ -183,16 +193,18 @@ int main(int argc, char * argv[])
 		}
 	}
 
-
+	//outputs the matrix to the screen
+	cout << C.rows() << "x" << C.columns();
 	cout << endl << C << endl;
 	
+	//if specified earlier, output matrix to file
 	if(output)
 	{
 		outFile << C.rows() << "x" << C.columns() << endl;
 		outFile << C;
 	}
 
-	cout << "Thanks bye\n";
+	cout << "Thanks bye" << endl;
 	return 0;
 }
 
@@ -201,7 +213,11 @@ int main(int argc, char * argv[])
 FUNCITON NAME: options
 PURPOSE: convert argument into int for switch statement
 RETUNRS: int
-NOTES:
+NOTES: this function takes in the string that is the argument for which opertaion
+	   to perform, and from there returns a number so that the switch statement works
+	   there isn't really a logical order to these, it is just the order i added 
+	   these operations to the program. 
+	   returns 0 if it is an invalid argument
 ----------------------------------------------------------------------------------*/
 int options(string argName)
 {
@@ -237,7 +253,9 @@ int options(string argName)
 FUNCTION NAME: needsTwo
 PURPOSE: assesses if program needs 2 matrix arguments
 RETURNS: bool
-NOTES:
+NOTES:	this function is just my neat way of checking for a few argument to see
+		which ones need 2 matrices....(this then triggers in the driver the opening
+		of a second matrix file)
 ----------------------------------------------------------------------------------*/
 bool needsTwo(string arg)
 {
@@ -248,10 +266,17 @@ bool needsTwo(string arg)
 }
 
 /*----------------------------------------------------------------------------------
-FUNCTION NAME: rnadomFill
-PURPOSE: fill a matrix of given size with random numbers so i dont have to
+FUNCTION NAME: randomFill
+PURPOSE: fill a matrix of given size with random numbers (INTS ONLY) so i dont have to
 RETURNS: void
-NOTES:
+NOTES:  this is the funciton I made to fill a matrix with random numbers
+		this was made around when i did the determinant because i kept accidentally
+		making linearly dependent rows giving me a determinant of 0 and made me 
+		think that i had broken everything, when really i was just being a goob
+
+COMMAND TO USE:  ./matrix_math -rand A 3 4
+
+					this will randomly fill A.mtx with a 3x4 matrix
 ----------------------------------------------------------------------------------*/
 void randomFill(char* file, int rows, int columns)
 {
@@ -279,7 +304,10 @@ void randomFill(char* file, int rows, int columns)
 		}
 		outPut << endl;
 	}
-	
+
 	outPut.close();
 
+	return;
 }
+
+
