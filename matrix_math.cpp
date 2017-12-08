@@ -321,7 +321,7 @@ NOTES:
 ----------------------------------------------------------------------------------*/
 void helpscreen()
 {
-	cout << endl << endl;
+	cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" << endl;
 	cout << "Command:  Example uses:               What it does: " << endl
 		 << "--------------------------------------------------------------------------------------\n"
 		 << "-inp      ./matrix_math -inp A        display contents of A" << endl
