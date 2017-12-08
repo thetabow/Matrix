@@ -18,6 +18,12 @@ COMPILATION: g++
 NOTES: templated class
 
 MODIFICATION HISTORY:
+Author:			Date: 			Version:		Details:
+----------------------------------------------------------------------------------------------------------------
+Zuriah Quinton  11/27/17		1.0				make a complex numbers class because I don't want to work on 
+												inverse of a matrix (basic operations implemented)
+Zuriah Quinton  11/28/17		1.1				comparison operators, so so many comparison operators...
+Zuriah Quinton  12/01/17		2.0				fix input output operators
 
 -------------------------------------------------------------------------------------------*/
 

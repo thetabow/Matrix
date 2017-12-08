@@ -19,6 +19,20 @@ COMPILATION:
 NOTES:
 
 MODIFICATION HISTORY: 
+Author:			Date: 			Version:		Details:
+----------------------------------------------------------------------------------------------------------------
+Zuriah Quinton  11/7/17			1.0				set up input and output to files
+Zuriah Quinton  11/9/17			2.0				addition, subtraction, multiplication
+Zuriah Quinton  11/9/17			2.1				size checking and compatibility checking
+Zuriah Quinton  11/10/17		2.2				command line arguments compatible for existing operations
+Zuriah Quinton  11/10/17		2.3				small fixes to output operator, assignment operator
+Zuriah Quinton  11/12/17		3.0				Transpose a matrix function
+Zuriah Quinton  11/17/17		3.1				Determinant of a matrix function
+Zuriah Quinton  11/17/17		3.1.5			Fix small problems with throwing errors related to incorrect size
+Zuriah Quinton  12/03/17		3.2				Inverse of a matrix
+Zuriah Quinton  12/03/17		4.0				COMPLEX NUMBERS class created (brought fraction class over from last project)
+Zuriah Quinton  12/03/17		4.1				finally got around to crammer's rule
+Zuriah Quinton  12/05/17		4.2				simplified how to open the files and get info into them
 -----------------------------------------------------------------------------*/
 
 

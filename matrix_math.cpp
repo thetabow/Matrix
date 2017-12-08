@@ -36,7 +36,7 @@ Zuriah Quinton  12/03/17		3.2				Inverse of a matrix
 Zuriah Quinton  12/03/17		4.0				COMPLEX NUMBERS class created (brought fraction class over from last project)
 Zuriah Quinton  12/03/17		4.1				finally got around to crammer's rule
 Zuriah Quinton  12/05/17		4.2				simplified how to open the files and get info into them
-
+Zuriah Quinton  12/06/17		4.3				help screen
 --------------------------------------------------------------------------------------------------------------*/
 #include "Matrix.h"
 #include <cstdlib>
@@ -46,6 +46,7 @@ using namespace std;
 //prototypes
 
 int options(string);
+void helpscreen();
 bool needsTwo(string arg);
 void randomFill(char * fileName, int rows, int columns);
 
@@ -89,13 +90,15 @@ int main(int argc, char * argv[])
 
 
 	num = 0;
-	
-	char file2[20];
+
 	char outfile[20];
 	ofstream outFile;
 	bool output = false;
 
-
+	if(string(argv[1]) == "-h") {
+		helpscreen();
+		return 0;
+	}
 
 	//any set of arguments requires more than 3 arguments
 	if(argc < 3)
@@ -310,4 +313,29 @@ void randomFill(char* file, int rows, int columns)
 	return;
 }
 
+/*----------------------------------------------------------------------------------
+FUNCTION NAME: helpscreen
+PURPOSE: print helpscreen
+RETURNS: void
+NOTES: 
+----------------------------------------------------------------------------------*/
+void helpscreen()
+{
+	cout << endl << endl;
+	cout << "Command:  Example uses:               What it does: " << endl
+		 << "--------------------------------------------------------------------------------------\n"
+		 << "-inp      ./matrix_math -inp A        display contents of A" << endl
+		 << "-out      ./matrix_math cmds -out B   performs cmds then outputs to B.mtx" << endl
+		 << "-add      ./matrix_math -add A B      performs A + B operation" << endl
+		 << "-sub      ./matrix_math -sub A B      performs A - B operation" << endl
+		 << "-mul      ./matrix_math -mul A B      performs A * B operation" << endl
+		 << "-eq       ./matrix_math -eq A B       test matrices for equality" << endl
+		 << "-T        ./matrix_math -T A          transposes matrix A" << endl
+		 << "-1        ./matrix_math -1 A          finds the inverse of A" << endl
+		 << "-det      ./matrix_math -det A        finds determinant of A" << endl
+		 << "-solve    ./matrix_math -solve A      finds solution to linear equations" << endl
+		 << "-rre      ./matrix_math -rre A        performs gaussian elimination on A" << endl
+		 << "-rand     ./matrix_math -rand A 2 3   fills A matrix with a 2x3 random matrix of ints" << endl << endl;
+
+}
 
